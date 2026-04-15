@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Data files (too large for git — download from NASA)
+cmapss_data/
+train_FD001.txt
+test_FD001.txt
+RUL_FD001.txt
+*.txt.gz
+*.zip
+
+# Saved model weights (large binary files)
+saved_models/
+*.keras
+*.h5
+*.pb
+*.ckpt*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+runs/
