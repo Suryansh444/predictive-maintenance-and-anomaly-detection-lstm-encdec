@@ -56,7 +56,7 @@ Both models are trained **semi-supervised** — exclusively on normal (healthy) 
 | Power Demand | EncDec-AD | 0.77 |
 | Space Shuttle | EncDec-AD | 0.81 |
 | ECG | EncDec-AD | 0.65 |
-| **FD001 (Ours)** | **Attention** | **0.9536 ✨** |
+| **FD001 (Ours)** | **Attention** | **0.9536 ** |
 
 The attention variant **surpasses all results from the reference paper**.
 
