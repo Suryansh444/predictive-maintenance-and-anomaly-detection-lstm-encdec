@@ -1,4 +1,4 @@
-# 🔧 Predictive Maintenance & Anomaly Detection in Industrial IoT
+# Predictive Maintenance & Anomaly Detection in Industrial IoT
 ### LSTM Encoder-Decoder (EncDec-AD) on NASA C-MAPSS FD001 Dataset
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python)](https://www.python.org/)
@@ -10,7 +10,7 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Results](#results)
