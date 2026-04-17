@@ -56,7 +56,7 @@ Both models are trained **semi-supervised** — exclusively on normal (healthy) 
 | Power Demand | EncDec-AD | 0.77 |
 | Space Shuttle | EncDec-AD | 0.81 |
 | ECG | EncDec-AD | 0.65 |
-| **FD001 (Ours)** | **Attention** | **0.9536** |
+| **FD001 (Ours)** | **Attention** | **0.9536 ** |
 
 The attention variant **surpasses all results from the reference paper**.
 
@@ -71,23 +71,18 @@ The attention variant **surpasses all results from the reference paper**.
 ---
 
 ## Project Structure
+
+```
 .
 ├── notebooks/
 │   ├── lstm_encdec_ad_models.py     # Baseline and Attention model definitions
 │   ├── model_training.py            # Training loop, callbacks, checkpointing
 │   └── preprocessing.py             # Sensor selection, normalization, sliding window
-├── anomaly_detection_lstm.ipynb     # Main notebook — full pipeline end-to-end
-├── Report.pdf                       # Detailed project report
-├── cmapss_data/                     # Dataset directory (add manually — see below)
-│   ├── train_FD001.txt
-│   ├── test_FD001.txt
-│   └── RUL_FD001.txt
-├── saved_models/                    # Saved model weights (auto-created on training)
-│   ├── baseline_best.keras
-│   └── attention_best.keras
+├── anomaly_detection_lstm.ipynb           # Main notebook — full pipeline end-to-end
+├── DAC_204_Project_Report.pdf  # Detailed project report
 ├── requirements.txt
-├── LICENSE
 └── README.md
+```
 
 ---
 
@@ -110,7 +105,7 @@ The dataset is publicly available from NASA's Prognostics Data Repository:
 
 🔗 [https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/](https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/)
 
-Download **CMAPSS Data** and place `train_FD001.txt`, `test_FD001.txt`, and `RUL_FD001.txt` in a `cmapss_data/` folder in the project root.
+We have used **CMAPSS Data** and placed `train_FD001.txt`, `test_FD001.txt`, and `RUL_FD001.txt` in the project root directory (the notebook moved them automatically).
 
 ### Labeling Strategy
 
@@ -152,38 +147,27 @@ pip install -r requirements.txt
 
 ### 4. Download the dataset
 
-Download the C-MAPSS dataset from the NASA link above and place the following files in `cmapss_data/`:
-cmapss_data/
-├── train_FD001.txt
-├── test_FD001.txt
-└── RUL_FD001.txt
+Download the C-MAPSS dataset from the NASA link above and place the following files in the project root:
+
+```
+train_FD001.txt
+test_FD001.txt
+RUL_FD001.txt
+```
 
 ---
 
 ## Usage
 
-### Option A — Run the full pipeline via notebook
+### Run the full pipeline
+
+Open and run `anomaly_detection_lstm.ipynb` end-to-end in Jupyter:
 
 ```bash
 jupyter notebook anomaly_detection_lstm.ipynb
 ```
 
-The notebook imports from the `notebooks/` module and walks through the complete pipeline end-to-end.
-
-### Option B — Run individual modules
-
-```bash
-# Preprocess data
-python notebooks/preprocessing.py
-
-# Train models
-python notebooks/model_training.py
-
-# Model definitions (imported by training script)
-# notebooks/lstm_encdec_ad_models.py
-```
-
-### Notebook Sections
+The notebook is organized into clearly labeled sections:
 
 | Section | Description |
 |---------|-------------|
@@ -203,28 +187,39 @@ python notebooks/model_training.py
 ## Model Architecture
 
 ### Baseline LSTM Encoder-Decoder
+
+```
 Input (batch, 30, 11)
-└─► Encoder LSTM (64 units) → final hidden state h_L ∈ ℝ⁶⁴
-└─► RepeatVector (30×)
-└─► Decoder LSTM (64 units)
-└─► TimeDistributed Dense (11 units)
-└─► Reconstructed sequence (batch, 30, 11)
+    └─► Encoder LSTM (64 units) → final hidden state h_L ∈ ℝ⁶⁴
+            └─► RepeatVector (30×)
+                    └─► Decoder LSTM (64 units)
+                            └─► TimeDistributed Dense (11 units)
+                                    └─► Reconstructed sequence (batch, 30, 11)
+
 Total Parameters: 53,195
+```
 
 ### Attention LSTM Encoder-Decoder
+
+```
 Input (batch, 30, 11)
-└─► Encoder LSTM (64 units) → all hidden states H ∈ ℝ³⁰ˣ⁶⁴
-└─► Bahdanau Attention (32 units)
-↓ dynamic context vector c_t at each decoder step
-└─► Decoder LSTM (64 units) with [h_{t-1}; c_t] input
-└─► TimeDistributed Dense (11 units)
-└─► Reconstructed sequence (batch, 30, 11)
+    └─► Encoder LSTM (64 units) → all hidden states H ∈ ℝ³⁰ˣ⁶⁴
+            └─► Bahdanau Attention (32 units)
+                    ↓ dynamic context vector c_t at each decoder step
+            └─► Decoder LSTM (64 units) with [h_{t-1}; c_t] input
+                    └─► TimeDistributed Dense (11 units)
+                            └─► Reconstructed sequence (batch, 30, 11)
+
 Total Parameters: 58,027  (+9% over baseline)
+```
 
 **Bahdanau Attention:**
+
+```
 e_{t,s}  = vᵀ · tanh(W_a · h^D_{t-1} + U_a · h^E_s)
 α_{t,s}  = softmax(e_{t,s})
 c_t      = Σ_s α_{t,s} · h^E_s
+```
 
 ---
 
